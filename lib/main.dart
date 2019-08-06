@@ -16,7 +16,7 @@ class MyApp extends StatelessWidget {
         primaryColor: Colors.red,
         accentColor: Colors.redAccent,
       ),
-      home: ItemInfo(),
+      home: HomePage(),
     );
   }
 }
