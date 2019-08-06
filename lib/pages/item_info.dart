@@ -13,13 +13,37 @@ class ItemInfo extends StatefulWidget {
   _ItemInfoState createState() => _ItemInfoState();
 }
 
-class _ItemInfoState extends State<ItemInfo> {
+class _ItemInfoState extends State<ItemInfo> {  
   bool qtyButtonState = true;
+  File imageFile;
 
   void _buttonChange() {
     setState(() {
       qtyButtonState = !qtyButtonState;
     });
+  }
+
+  Widget imagePlaceHolder(BuildContext context) {
+    return InkWell(
+      onTap: () => _openImagePicker(context),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Container(
+            margin: EdgeInsets.all(20),
+            padding: EdgeInsets.all(20),
+            decoration: BoxDecoration(
+                border: Border.all(color: Colors.black),
+                borderRadius: BorderRadius.all(Radius.circular(10))),
+            child: Icon(Icons.camera_alt, size: 40, color: Colors.black54),
+          ),
+          Text(
+            'ADD PHOTOS',
+            style: TextStyle(fontSize: 20),
+          )
+        ],
+      ),
+    );
   }
 
   @override
@@ -36,32 +60,18 @@ class _ItemInfoState extends State<ItemInfo> {
               child: Column(
                 children: <Widget>[
                   //------------------Add Photo-------------------------
-                  InkWell(
-                    onTap: () => _openImagePicker(context),
-                    child: Container(
-                      color: Colors.black12,
-                      height: 250,
-                      width: double.infinity,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          Container(
-                            margin: EdgeInsets.all(20),
-                            padding: EdgeInsets.all(20),
-                            decoration: BoxDecoration(
-                                border: Border.all(color: Colors.black),
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(10))),
-                            child: Icon(Icons.camera_alt,
-                                size: 40, color: Colors.black54),
+                  Container(
+                    color: Colors.black12,
+                    height: 300,
+                    width: MediaQuery.of(context).size.width,
+                    child: imageFile == null
+                        ? imagePlaceHolder(context)
+                        : Image.file(
+                            imageFile,
+                            fit: BoxFit.cover,
+                            height: 300,
+                            width: MediaQuery.of(context).size.width,
                           ),
-                          Text(
-                            'ADD PHOTOS',
-                            style: TextStyle(fontSize: 20),
-                          )
-                        ],
-                      ),
-                    ),
                   ),
                   //------------------Item Name-------------------------
                   Padding(
@@ -215,7 +225,7 @@ class _ItemInfoState extends State<ItemInfo> {
                               child: Text(
                                 'Total Value',
                                 style: TextStyle(
-                                    fontSize: 25, color: Colors.black54),
+                                    fontSize: 20, color: Colors.black54),
                               ),
                             ),
                           ],
@@ -312,6 +322,9 @@ class _ItemInfoState extends State<ItemInfo> {
 
   void _getImage(BuildContext context, ImageSource source) {
     ImagePicker.pickImage(source: source, maxWidth: 400.0).then((File image) {
+      setState(() {
+        imageFile = image;
+      });
       Navigator.pop(context);
     });
   }
