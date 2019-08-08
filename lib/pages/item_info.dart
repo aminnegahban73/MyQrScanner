@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:my_barcode_scanner/components/connected_btton.dart';
 
 import 'package:rflutter_alert/rflutter_alert.dart';
 
@@ -13,15 +14,25 @@ class ItemInfo extends StatefulWidget {
   _ItemInfoState createState() => _ItemInfoState();
 }
 
-class _ItemInfoState extends State<ItemInfo> {  
-  bool qtyButtonState = true;
+class _ItemInfoState extends State<ItemInfo> {
+  // bool qtyButtonState = true;
+
+  // void _buttonChange() {
+  //   setState(() {
+  //     qtyButtonState = !qtyButtonState;
+  //   });
+  // }
+
   File imageFile;
 
-  void _buttonChange() {
-    setState(() {
-      qtyButtonState = !qtyButtonState;
-    });
-  }
+  final _formKey = GlobalKey<FormState>();
+
+  String _itemName = "";
+  String _itemQty = "";
+  String _itemPrice = "";
+  String _itemTag = "";
+  String _itemNotes = "";
+  String _totalPrice = "";
 
   Widget imagePlaceHolder(BuildContext context) {
     return InkWell(
@@ -57,6 +68,7 @@ class _ItemInfoState extends State<ItemInfo> {
         children: <Widget>[
           Center(
             child: Form(
+              key: _formKey,
               child: Column(
                 children: <Widget>[
                   //------------------Add Photo-------------------------
@@ -88,6 +100,7 @@ class _ItemInfoState extends State<ItemInfo> {
                               padding: const EdgeInsets.only(left: 15.0),
                               child: ListTile(
                                 title: TextFormField(
+                                  onSaved: (String val) => _itemName = val,
                                   decoration: InputDecoration(
                                     border: InputBorder.none,
                                     labelText: 'Item Name',
@@ -110,6 +123,7 @@ class _ItemInfoState extends State<ItemInfo> {
                               padding: const EdgeInsets.only(left: 15.0),
                               child: ListTile(
                                 title: TextFormField(
+                                  onSaved: (String val) => _itemQty = val,
                                   decoration: InputDecoration(
                                     border: InputBorder.none,
                                     labelText: 'Quantity',
@@ -122,39 +136,78 @@ class _ItemInfoState extends State<ItemInfo> {
                                     Alert(
                                       context: context,
                                       title: "Change Quantity",
-                                      content: Column(
-                                        children: <Widget>[
-                                          Row(
-                                            children: <Widget>[
-                                              Center(
-                                                child: Wrap(
+                                      content: Padding(
+                                        padding:
+                                            const EdgeInsets.only(top: 20.0),
+                                        child: Column(
+                                          children: <Widget>[
+                                            Row(
+                                              mainAxisSize: MainAxisSize.max,
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.spaceEvenly,
+                                              children: <Widget>[
+                                                Stack(
+                                                  alignment:
+                                                      AlignmentDirectional
+                                                          .center,
                                                   children: <Widget>[
-                                                    MaterialButton(
-                                                      onPressed: qtyButtonState
-                                                          ? _buttonChange
-                                                          : null,
-                                                      child: Text("button1"),
-                                                      color: Colors.greenAccent,
+                                                    Container(
+                                                      child: ConnectedButton(
+                                                          id: 0),
                                                     ),
-                                                    MaterialButton(
-                                                      onPressed: qtyButtonState
-                                                          ? null
-                                                          : _buttonChange,
-                                                      child: Text("button2"),
-                                                      color: Colors.greenAccent,
+                                                    Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .center,
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .center,
+                                                      children: <Widget>[
+                                                        Icon(
+                                                          Icons.arrow_upward,
+                                                          color: Colors.green,
+                                                        ),
+                                                        Text('Increase'),
+                                                      ],
                                                     ),
                                                   ],
                                                 ),
-                                              ),
-                                            ],
-                                          ),
-                                          TextField(
-                                            decoration: InputDecoration(
-                                              icon: Icon(Icons.add),
-                                              labelText: 'Amount',
+                                                Stack(
+                                                  alignment:
+                                                      AlignmentDirectional
+                                                          .center,
+                                                  children: <Widget>[
+                                                    Container(
+                                                      child: ConnectedButton(
+                                                          id: 1),
+                                                    ),
+                                                    Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .center,
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .center,
+                                                      children: <Widget>[
+                                                        Icon(
+                                                          Icons.arrow_downward,
+                                                          color: Colors.red,
+                                                        ),
+                                                        Text('Decrease'),
+                                                      ],
+                                                    ),
+                                                  ],
+                                                ),
+                                              ],
                                             ),
-                                          ),
-                                        ],
+                                            TextField(
+                                              decoration: InputDecoration(
+                                                icon: Icon(Icons.add),
+                                                labelText: 'Amount',
+                                              ),
+                                            ),
+                                          ],
+                                        ),
                                       ),
                                       buttons: [
                                         DialogButton(
@@ -207,6 +260,7 @@ class _ItemInfoState extends State<ItemInfo> {
                                   child: Padding(
                                     padding: const EdgeInsets.only(left: 15.0),
                                     child: TextFormField(
+                                      onSaved: (String val) => _itemPrice = val,
                                       decoration: InputDecoration(
                                         border: InputBorder.none,
                                         labelText: 'Price',
@@ -223,13 +277,14 @@ class _ItemInfoState extends State<ItemInfo> {
                               padding: const EdgeInsets.only(
                                   right: 25, left: 25, top: 20),
                               child: Text(
-                                'Total Value',
+                                _totalPrice,
                                 style: TextStyle(
                                     fontSize: 20, color: Colors.black54),
                               ),
                             ),
                           ],
                         ),
+                        //------------------Tags-------------------------
                         Padding(
                           padding: const EdgeInsets.only(
                               right: 25, left: 25, top: 20),
@@ -240,6 +295,7 @@ class _ItemInfoState extends State<ItemInfo> {
                               padding: const EdgeInsets.only(left: 15.0),
                               child: ListTile(
                                 title: TextFormField(
+                                  onSaved: (String val) => _itemTag = val,
                                   decoration: InputDecoration(
                                     border: InputBorder.none,
                                     labelText: 'Tags',
@@ -269,6 +325,7 @@ class _ItemInfoState extends State<ItemInfo> {
                               padding: const EdgeInsets.only(left: 15.0),
                               child: ListTile(
                                 title: TextFormField(
+                                  onSaved: (String val) => _itemNotes = val,
                                   decoration: InputDecoration(
                                     border: InputBorder.none,
                                     labelText: 'Notes',
@@ -295,6 +352,7 @@ class _ItemInfoState extends State<ItemInfo> {
                               height: 70,
                               onPressed: () {
                                 //  _validateInputsAndSubmit();
+                                _save();
                               },
                               minWidth: MediaQuery.of(context).size.width,
                               child: Text(
@@ -318,6 +376,14 @@ class _ItemInfoState extends State<ItemInfo> {
         ],
       ),
     );
+  }
+
+  void _save() {
+    _formKey.currentState.save();
+    setState(() {
+    _totalPrice = (int.parse(_itemQty) * int.parse(_itemPrice)).toString();
+    });
+    print(_totalPrice);
   }
 
   void _getImage(BuildContext context, ImageSource source) {
