@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
-import 'package:my_barcode_scanner/models/items_card.dart';
+import 'package:my_barcode_scanner/models/item_model.dart';
 import 'package:my_barcode_scanner/pages/qr_generator.dart';
+import 'package:my_barcode_scanner/resources/database_helper.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -11,6 +12,23 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   String scanResult = '';
+
+  DatabaseHelper db = DatabaseHelper();
+  // List<ItemModel> _items;
+  int count = 0;
+
+  Future<List<ItemModel>> _getItems() async {
+    
+    var items =  await db.getAllItems();
+
+    for (var i = 0; i < items.length; i++) {
+
+      items.add(ItemModel.fromMap(items[i]));
+    }
+
+    return items;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -18,49 +36,82 @@ class _HomePageState extends State<HomePage> {
         title: Text("QR Scanner"),
         centerTitle: true,
       ),
-      body: ListView(
-        children: <Widget>[
-          ItemsCard(
-            itemID: '123',
-            itemPicturePath: 'assets/img/bg2.jpg',
-            itemName: 'Item 1',
-            itemNotes: 'jdcnsladcnadkcm',
-            itemPrice: 125.0,
-            itemQty: 5,
-            itemTag: null,
-            itemTotalPrice: 625.0,
-          ),
-          ItemsCard(
-            itemID: '123',
-            itemPicturePath: 'assets/img/2.jpg',
-            itemName: 'Item 2',
-            itemNotes: 'jdcnsladcnadkcm',
-            itemPrice: 125.0,
-            itemQty: 5,
-            itemTag: null,
-            itemTotalPrice: 625.0,
-          ),
-          ItemsCard(
-            itemID: '123',
-            itemPicturePath: 'assets/img/1.jpg',
-            itemName: 'Item 3',
-            itemNotes: 'jdcnsladcnadkcm',
-            itemPrice: 125.0,
-            itemQty: 5,
-            itemTag: null,
-            itemTotalPrice: 625.0,
-          ),
-          ItemsCard(
-            itemID: '123',
-            itemPicturePath: 'assets/img/bg.jpg',
-            itemName: 'Item 4',
-            itemNotes: 'jdcnsladcnadkcm',
-            itemPrice: 125.0,
-            itemQty: 5,
-            itemTag: null,
-            itemTotalPrice: 625.0,
-          ),
-        ],
+      body: Container(
+        child: FutureBuilder(
+          future: _getItems(),
+          builder: (BuildContext context, AsyncSnapshot snapshot) {
+            if (snapshot.data == null) {
+              return Container(
+                child: Center(
+                  child: Text('Loading ...'),
+                ),
+              );
+            } else {
+              return ListView.builder(
+                itemCount: snapshot.data.length,
+                itemBuilder: (BuildContext context, int i) {
+                  return Padding(
+                    padding: EdgeInsets.all(5.0),
+                    child: Card(
+                      child: Row(
+                        children: <Widget>[
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Image.asset(
+                              snapshot.data[i].itemPicturePath,
+                              height: 120.0,
+                              width: 120.0,
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                          Expanded(
+                            child: Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 8.0),
+                              child: Column(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceAround,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: <Widget>[
+                                  Text(
+                                    snapshot.data[i].itemName,
+                                    style: TextStyle(
+                                        fontSize: 25,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                  SizedBox(height: 20),
+                                  Text(
+                                    'Qty = ${snapshot.data[i].itemQty}',
+                                    style: TextStyle(
+                                      color: Colors.grey,
+                                      fontSize: 17,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Container(
+                              alignment: Alignment.topRight,
+                              height: 130,
+                              child: IconButton(
+                                onPressed: () {},
+                                icon: Icon(Icons.more_vert),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                },
+              );
+            }
+          },
+        ),
       ),
       floatingActionButton: FloatingActionButton.extended(
         label: Text('Scan'),

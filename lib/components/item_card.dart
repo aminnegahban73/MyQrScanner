@@ -1,25 +1,36 @@
 import 'package:flutter/material.dart';
 
-class ItemsCard extends StatelessWidget {
-  final String itemID;
-  final String itemPicturePath;
-  final String itemName;
-  final int itemQty;
-  final double itemPrice;
-  final double itemTotalPrice;
-  final String itemTag;
-  final String itemNotes;
+import '../models/item_model.dart';
+import '../resources/database_helper.dart';
 
-  ItemsCard({
-    this.itemID,
-    this.itemName,
-    this.itemQty,
-    this.itemPrice,
-    this.itemTotalPrice,
-    this.itemTag,
-    this.itemNotes,
-    this.itemPicturePath,
-  });
+class ItemsCard extends StatefulWidget {
+  @override
+  _ItemsCardState createState() => _ItemsCardState();
+}
+
+class _ItemsCardState extends State<ItemsCard> {
+  DatabaseHelper db = DatabaseHelper();
+  var _items;
+  int count = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchingData();
+  }
+
+  void _fetchingData() async {
+    List items;
+    items = await db.getAllItems();
+    for (var i = 0; i < items.length; i++) {
+      _items = ItemModel.map(items[i]);
+       print('Saved Items ${_items.itemName} , ${_items.itemID},${_items.itemPicturePath}');
+    }
+
+    setState(() {
+      _items = items;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +42,7 @@ class ItemsCard extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Image.asset(
-                itemPicturePath,
+                _items.itemPicturePath,
                 height: 120.0,
                 width: 120.0,
                 fit: BoxFit.cover,
@@ -45,13 +56,13 @@ class ItemsCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     Text(
-                      itemName,
+                      _items.itemName,
                       style:
                           TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
                     ),
                     SizedBox(height: 20),
                     Text(
-                      'Qty = $itemQty',
+                      'Qty = ${_items.itemQty}',
                       style: TextStyle(
                         color: Colors.grey,
                         fontSize: 17,
