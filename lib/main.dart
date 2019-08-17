@@ -8,15 +8,15 @@ import 'pages/home_page.dart';
 
 void main() async {
   
-  
+
   setupLocator();
   runApp(MyApp());
   
     // #region Sqflite Example
 
 
-  // var db = DatabaseHelper();
 
+  // var db = DatabaseHelper();
   // List _items = await db.queryAllRows();
   // for (var i = 0; i < _items.length; i++) {
   //   ItemModel item = ItemModel.map(_items[i]);

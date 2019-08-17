@@ -8,16 +8,16 @@ class ItemModel {
   String itemTag;
   String itemNotes;
 
-  ItemModel(
-   { this.itemID,
+  ItemModel({
+    this.itemID,
     this.itemName,
     this.itemQty,
     this.itemPrice,
     this.itemTotalPrice,
     this.itemTag,
     this.itemNotes,
-    this.itemPicturePath,}
-  );
+    this.itemPicturePath,
+  });
 
   // int get itemID => _itemID;
   // String get itemPicturePath => _itemPicturePath;
@@ -52,13 +52,14 @@ class ItemModel {
     };
   }
 
-  ItemModel.fromMap(Map<String, dynamic> parseMap)
-      : this.itemID = parseMap['itemID'],
-        this.itemPicturePath = parseMap['itemPicturePath'],
-        this.itemName = parseMap['itemName'],
-        this.itemQty = parseMap['itemQty'],
-        this.itemPrice = parseMap['itemPrice'],
-        this.itemTotalPrice = parseMap['itemTotalPrice'],
-        this.itemTag = parseMap['itemTag'],
-        this.itemNotes = parseMap['itemNotes'];
+  ItemModel.fromMap(Map<String, dynamic> parseMap) {
+    this.itemID = parseMap['itemID'];
+    this.itemPicturePath = parseMap['itemPicturePath'];
+    this.itemName = parseMap['itemName'];
+    this.itemQty = parseMap['itemQty'];
+    this.itemPrice = parseMap['itemPrice'];
+    this.itemTotalPrice = parseMap['itemTotalPrice'];
+    this.itemTag = parseMap['itemTag'];
+    this.itemNotes = parseMap['itemNotes'];
+  }
 }

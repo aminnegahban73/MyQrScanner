@@ -17,14 +17,16 @@ class _HomePageState extends State<HomePage> {
    List<ItemModel> _items;
   int count = 0;
 
-  Future<List<ItemModel>> _getItems() async {
-    var items = await db.getAllItems();
+  Future<List<Map>> _getItems() async {
+    // var items = await db.getAllItems();
 
-    for (var i = 0; i < items.length; i++) {
-      _items.add(ItemModel.fromMap(items[i]));
-    }
+    // for (var i = 0; i < items.length; i++) {
+    //   _items.add(ItemModel.map(items[i]));
+    // }
 
-    return _items;
+    // return _items;
+
+    return db.queryAllRows();
   }
 
   @override
@@ -56,7 +58,7 @@ class _HomePageState extends State<HomePage> {
                           Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: Image.asset(
-                              snapshot.data[i].itemPicturePath,
+                              snapshot.data[i]['itemPicturePath'],
                               height: 120.0,
                               width: 120.0,
                               fit: BoxFit.cover,
@@ -72,14 +74,14 @@ class _HomePageState extends State<HomePage> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: <Widget>[
                                   Text(
-                                    snapshot.data[i].itemName,
+                                    snapshot.data[i]['itemName'],
                                     style: TextStyle(
                                         fontSize: 25,
                                         fontWeight: FontWeight.bold),
                                   ),
                                   SizedBox(height: 20),
                                   Text(
-                                    'Qty = ${snapshot.data[i].itemQty}',
+                                    'Qty = ${snapshot.data[i]['itemQty']}',
                                     style: TextStyle(
                                       color: Colors.grey,
                                       fontSize: 17,
