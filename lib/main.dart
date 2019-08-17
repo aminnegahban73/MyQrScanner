@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:my_barcode_scanner/models/item_model.dart';
+import 'package:my_barcode_scanner/pages/item_info.dart';
 import 'package:my_barcode_scanner/resources/database_helper.dart';
 import 'package:my_barcode_scanner/service_locator.dart';
 
@@ -14,13 +15,11 @@ void main() async {
   
     // #region Sqflite Example
 
-
-
   // var db = DatabaseHelper();
   // List _items = await db.queryAllRows();
   // for (var i = 0; i < _items.length; i++) {
   //   ItemModel item = ItemModel.map(_items[i]);
-  //   print('Saved Items ${item.itemName} , ${item.itemID},${item.itemPicturePath}');
+  //   print('Saved Items ${item.itemName} ,${item.itemQty}, ${item.itemID}, ${item.itemNotes}, ${item.itemTag}');
   // }
   // int saved = await db.addItem(
   //   ItemModel(

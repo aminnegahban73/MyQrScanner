@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
-import 'package:my_barcode_scanner/models/item_model.dart';
 import 'package:my_barcode_scanner/pages/qr_generator.dart';
 import 'package:my_barcode_scanner/resources/database_helper.dart';
 
@@ -14,7 +13,7 @@ class _HomePageState extends State<HomePage> {
   String scanResult = '';
 
   DatabaseHelper db = DatabaseHelper();
-   List<ItemModel> _items;
+  //  List<ItemModel> _items;
   int count = 0;
 
   Future<List<Map>> _getItems() async {
@@ -57,12 +56,19 @@ class _HomePageState extends State<HomePage> {
                         children: <Widget>[
                           Padding(
                             padding: const EdgeInsets.all(8.0),
-                            child: Image.asset(
-                              snapshot.data[i]['itemPicturePath'],
-                              height: 120.0,
-                              width: 120.0,
-                              fit: BoxFit.cover,
-                            ),
+                            child: snapshot.data[i]['itemPicturePath'] == null
+                                ? Image.asset(
+                                    'assets/img/no-image.jpg',
+                                    height: 120.0,
+                                    width: 120.0,
+                                    fit: BoxFit.cover,
+                                  )
+                                : Image.asset(
+                                    snapshot.data[i]['itemPicturePath'],
+                                    height: 120.0,
+                                    width: 120.0,
+                                    fit: BoxFit.cover,
+                                  ),
                           ),
                           Expanded(
                             child: Padding(
