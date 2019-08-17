@@ -14,19 +14,17 @@ class _HomePageState extends State<HomePage> {
   String scanResult = '';
 
   DatabaseHelper db = DatabaseHelper();
-  // List<ItemModel> _items;
+   List<ItemModel> _items;
   int count = 0;
 
   Future<List<ItemModel>> _getItems() async {
-    
-    var items =  await db.getAllItems();
+    var items = await db.getAllItems();
 
     for (var i = 0; i < items.length; i++) {
-
-      items.add(ItemModel.fromMap(items[i]));
+      _items.add(ItemModel.fromMap(items[i]));
     }
 
-    return items;
+    return _items;
   }
 
   @override

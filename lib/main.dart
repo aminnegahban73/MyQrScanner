@@ -8,6 +8,7 @@ import 'pages/home_page.dart';
 
 void main() async {
   
+  
   setupLocator();
   runApp(MyApp());
   

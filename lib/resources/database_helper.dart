@@ -68,9 +68,20 @@ class DatabaseHelper {
 
     return result.toList();
   }
-   Future<List<Map<String, dynamic>>> queryAllRows() async {
+
+  Future<List<Map<String, dynamic>>> queryAllRows() async {
     Database dbClient = await db;
     return await dbClient.query(tblItem);
+  }
+
+  Future fetchEveryone() async {
+    Database dbClient = await db;
+    List results = await dbClient.query(tblItem);
+    List people = new List();
+    results.forEach((map) {
+      people.add(ItemModel.fromMap(map));
+    });
+    return people;
   }
 
   Future<int> getCount() async {
@@ -82,8 +93,8 @@ class DatabaseHelper {
   Future<ItemModel> getItem(int id) async {
     var dbClient = await db;
 
-    var result = await dbClient
-        .rawQuery("SELECT * FROM $tblItem WHERE $columnId = $id");
+    var result =
+        await dbClient.rawQuery("SELECT * FROM $tblItem WHERE $columnId = $id");
     if (result.length == 0) return null;
     return new ItemModel.fromMap(result.first);
   }
