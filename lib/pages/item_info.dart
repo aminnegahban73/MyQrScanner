@@ -19,6 +19,7 @@ class ItemInfo extends StatefulWidget {
 }
 
 class _ItemInfoState extends State<ItemInfo> {
+  
   // bool qtyButtonState = true;
 
   // void _buttonChange() {
@@ -86,6 +87,12 @@ class _ItemInfoState extends State<ItemInfo> {
 
   @override
   Widget build(BuildContext context) {
+    _itemNameController.text = widget.itemModel.itemName;
+    _itemQtyController.text = widget.itemModel.itemQty.toString();
+    _itemPriceController.text = widget.itemModel.itemPrice.toString();
+    _itemTagController.text = widget.itemModel.itemTag;
+    _itemNotesController.text = widget.itemModel.itemNotes;
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Add Item'),
