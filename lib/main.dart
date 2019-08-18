@@ -15,7 +15,7 @@ void main() async {
   
     // #region Sqflite Example
 
-  // var db = DatabaseHelper();
+  var db = DatabaseHelper();
   // List _items = await db.queryAllRows();
   // for (var i = 0; i < _items.length; i++) {
   //   ItemModel item = ItemModel.map(_items[i]);
@@ -24,13 +24,13 @@ void main() async {
   // int saved = await db.addItem(
   //   ItemModel(
   //   // itemID: "1",
-  //     itemName: "amin",
-  //     itemNotes: "sknvjo",
-  //     itemPicturePath: "assets/img/bg2.jpg",
+  //     itemName: "Mobile",
+  //     itemNotes: "The best of best",
+  //     itemPicturePath: "assets/img/3.jpg",
   //     itemPrice: 55,
-  //     itemQty: 2,
-  //     itemTag: "cdc",
-  //     itemTotalPrice: 125.5));
+  //     itemQty: 6,
+  //     itemTag: "qweasdfzc",
+  //     itemTotalPrice: 1615.5));
 
   //     print('Add $saved .........................');
 

@@ -11,7 +11,9 @@ import 'package:rflutter_alert/rflutter_alert.dart';
 class ItemInfo extends StatefulWidget {
   final Widget qrLabel;
 
-  const ItemInfo({Key key, this.qrLabel}) : super(key: key);
+  final ItemModel itemModel;
+
+  const ItemInfo({Key key, this.qrLabel, this.itemModel,}) : super(key: key);
   @override
   _ItemInfoState createState() => _ItemInfoState();
 }
@@ -129,7 +131,7 @@ class _ItemInfoState extends State<ItemInfo> {
                                   onSaved: (String val) => _itemName = val,
                                   decoration: InputDecoration(
                                     border: InputBorder.none,
-                                    labelText: 'Item Name',
+                                    labelText: 'Name',
                                     labelStyle: TextStyle(fontSize: 20),
                                   ),
                                   keyboardType: TextInputType.emailAddress,

@@ -62,12 +62,25 @@ class DatabaseHelper {
   }
 
   //Get items
-  Future<List> getAllItems() async {
+  Future<List<Map<String, dynamic>>> getAllItems() async {
     var dbClient = await db;
     var result = await dbClient.rawQuery("SELECT * FROM $tblItem");
 
     return result.toList();
   }
+
+  Future<List<ItemModel>> getItemList() async {
+    var itemMapList = await getAllItems();
+    List<ItemModel> itemList = List<ItemModel>();
+
+    for (var i = 0; i < itemMapList.length; i++) {
+      itemList.add(ItemModel.fromMap(itemMapList[i]));
+    }
+    return itemList;
+  }
+
+
+
 
   Future<List<Map<String, dynamic>>> queryAllRows() async {
     Database dbClient = await db;
