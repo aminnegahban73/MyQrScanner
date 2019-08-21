@@ -50,7 +50,8 @@ class _ItemInfoState extends State<ItemInfo> {
 
   @override
   void initState() {
-    itemModel.itemPicturePath = 'assets/img/no-image.jpg';
+    if (itemModel.itemID == null)
+      itemModel.itemPicturePath = 'assets/img/no-image.jpg';
     _itemNameController.text = itemModel.itemName;
     _itemQtyController.text = itemModel.itemQty.toString();
     _itemPriceController.text = itemModel.itemPrice.toString();

@@ -15,7 +15,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   String scanResult = '';
 
-  DatabaseHelper db = DatabaseHelper();
+  DatabaseHelper dbHelper = DatabaseHelper();
   List<ItemModel> _itemsList;
   int count = 0;
 
@@ -44,7 +44,69 @@ class _HomePageState extends State<HomePage> {
                     return Padding(
                       padding: EdgeInsets.all(5.0),
                       child: InkWell(
-                        onTap: () => _navigateToInfoPage(this._itemsList[i],'Edit'),
+                        onLongPress: () {
+                          showModalBottomSheet(
+                              backgroundColor: Colors.white60,
+                              context: context,
+                              builder: (BuildContext context) {
+                                return Container(
+                                  height: 250.0,
+                                  width: 40,
+                                  padding: EdgeInsets.all(10.0),
+                                  child: ListView(
+                                    children: <Widget>[
+                                      Column(children: [
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceEvenly,
+                                          children: <Widget>[
+                                            ModalIconButton(
+                                              onPressed: () {
+                                                Navigator.pop(context);
+                                                _navigateToInfoPage(
+                                                    this._itemsList[i], 'Edit');
+                                              },
+                                              text: 'Edit',
+                                              icon: Icon(Icons.edit),
+                                            ),
+                                            ModalIconButton(
+                                              text: 'Quantity',
+                                              icon: Icon(Icons.iso),
+                                            ),
+                                          ],
+                                        ),
+                                        SizedBox(
+                                          height: 20,
+                                        ),
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceEvenly,
+                                          children: <Widget>[
+                                            ModalIconButton(
+                                              text: 'Copy',
+                                              icon: Icon(Icons.content_copy),
+                                            ),
+                                            ModalIconButton(
+                                              onPressed: (){
+                                                Navigator.pop(context);
+                                                dbHelper.deleteItem(this._itemsList[i].itemID);
+                                                setState(() {
+                                                 this._itemsList.removeAt(i); 
+                                                });
+                                              },
+                                              text: 'Delete',
+                                              icon: Icon(Icons.delete_outline),
+                                            ),
+                                          ],
+                                        ),
+                                      ]),
+                                    ],
+                                  ),
+                                );
+                              });
+                        },
+                        onTap: () =>
+                            _navigateToInfoPage(this._itemsList[i], 'Edit'),
                         // Navigator.push(
                         //   context,
                         //   MaterialPageRoute(
@@ -88,6 +150,15 @@ class _HomePageState extends State<HomePage> {
                                             fontWeight: FontWeight.bold),
                                       ),
                                       SizedBox(height: 20),
+                                      Text(
+                                        'Price = ${_itemsList[i].itemPrice}',
+                                        style: TextStyle(
+                                          color: Colors.grey,
+                                          fontSize: 17,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      SizedBox(height: 5),
                                       Text(
                                         'Qty = ${_itemsList[i].itemQty}',
                                         style: TextStyle(
@@ -221,10 +292,17 @@ class _HomePageState extends State<HomePage> {
           ),
       floatingActionButton: FloatingActionButton.extended(
         label: Text('Scan'),
-      //  onPressed: _qrScanner,
-      onPressed:()=> _navigateToInfoPage(
-        ItemModel(itemName: '',itemNotes: '',itemPicturePath: '',itemPrice: 0,itemQty: 0,itemTag: '',itemTotalPrice: 0),'ADD'
-      ),
+        //  onPressed: _qrScanner,
+        onPressed: () => _navigateToInfoPage(
+            ItemModel(
+                itemName: '',
+                itemNotes: '',
+                itemPicturePath: '',
+                itemPrice: 0,
+                itemQty: 0,
+                itemTag: '',
+                itemTotalPrice: 0),
+            'ADD'),
         icon: Icon(Icons.camera_alt),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
@@ -249,7 +327,10 @@ class _HomePageState extends State<HomePage> {
   void _navigateToInfoPage(ItemModel itemModel, String title) async {
     bool result =
         await Navigator.push(context, MaterialPageRoute(builder: (context) {
-      return ItemInfo(appBarTitle: title,itemModel: itemModel,);
+      return ItemInfo(
+        appBarTitle: title,
+        itemModel: itemModel,
+      );
     }));
 
     if (result == true) {
@@ -258,9 +339,9 @@ class _HomePageState extends State<HomePage> {
   }
 
   void updateListView() async {
-    var dbFuture = db.initDb();
-    dbFuture.then((database) {
-      Future<List<ItemModel>> itemListFuture = db.getItemList();
+    var dbHelperFuture = dbHelper.initDb();
+    dbHelperFuture.then((database) {
+      Future<List<ItemModel>> itemListFuture = dbHelper.getItemList();
       itemListFuture.then((itemList) {
         setState(() {
           this._itemsList = itemList;
@@ -271,7 +352,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   // Future<List<Map>> _getItems() async {
-  //   // var items = await db.getAllItems();
+  //   // var items = await dbHelper.getAllItems();
 
   //   // for (var i = 0; i < items.length; i++) {
   //   //   _items.add(ItemModel.map(items[i]));
@@ -279,7 +360,41 @@ class _HomePageState extends State<HomePage> {
 
   //   // return _items;
 
-  //   return db.queryAllRows();
+  //   return dbHelper.queryAllRows();
   // }
 
+}
+
+class ModalIconButton extends StatelessWidget {
+  final String text;
+  final Icon icon;
+  final Function onPressed;
+  const ModalIconButton({
+    Key key,
+    this.text,
+    this.icon,
+    this.onPressed,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 100,
+      width: 100,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: <Widget>[
+          IconButton(
+            iconSize: 50,
+            onPressed: this.onPressed,
+            icon: this.icon,
+          ),
+          Text(
+            this.text,
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          )
+        ],
+      ),
+    );
+  }
 }
