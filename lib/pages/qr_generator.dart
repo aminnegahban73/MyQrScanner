@@ -19,6 +19,7 @@ class QrGenerator extends StatefulWidget {
 }
 
 class _QrGeneratorState extends State<QrGenerator> {
+  
   String scanResult = '';
 
 //   static const double _topSectionTopPadding = 50.0;

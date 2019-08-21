@@ -44,13 +44,14 @@ class _HomePageState extends State<HomePage> {
                     return Padding(
                       padding: EdgeInsets.all(5.0),
                       child: InkWell(
-                        onTap: () => Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) =>
-                                ItemInfo(itemModel: _itemsList[i]),
-                          ),
-                        ),
+                        onTap: () => _navigateToInfoPage(this._itemsList[i],'Edit'),
+                        // Navigator.push(
+                        //   context,
+                        //   MaterialPageRoute(
+                        //     builder: (context) =>
+                        //         ItemInfo(itemModel: _itemsList[i]),
+                        //   ),
+                        // ),
                         child: Card(
                           child: Row(
                             children: <Widget>[
@@ -220,7 +221,10 @@ class _HomePageState extends State<HomePage> {
           ),
       floatingActionButton: FloatingActionButton.extended(
         label: Text('Scan'),
-        onPressed: _qrScanner,
+      //  onPressed: _qrScanner,
+      onPressed:()=> _navigateToInfoPage(
+        ItemModel(itemName: '',itemNotes: '',itemPicturePath: '',itemPrice: 0,itemQty: 0,itemTag: '',itemTotalPrice: 0),'ADD'
+      ),
         icon: Icon(Icons.camera_alt),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
@@ -242,7 +246,18 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-  void updateListView() {
+  void _navigateToInfoPage(ItemModel itemModel, String title) async {
+    bool result =
+        await Navigator.push(context, MaterialPageRoute(builder: (context) {
+      return ItemInfo(appBarTitle: title,itemModel: itemModel,);
+    }));
+
+    if (result == true) {
+      updateListView();
+    }
+  }
+
+  void updateListView() async {
     var dbFuture = db.initDb();
     dbFuture.then((database) {
       Future<List<ItemModel>> itemListFuture = db.getItemList();

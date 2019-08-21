@@ -15,12 +15,12 @@ void main() async {
   
     // #region Sqflite Example
 
-  var db = DatabaseHelper();
-  // List _items = await db.queryAllRows();
-  // for (var i = 0; i < _items.length; i++) {
-  //   ItemModel item = ItemModel.map(_items[i]);
-  //   print('Saved Items ${item.itemName} ,${item.itemQty}, ${item.itemID}, ${item.itemNotes}, ${item.itemTag}');
-  // }
+ var db = DatabaseHelper();
+  List _items = await db.queryAllRows();
+  for (var i = 0; i < _items.length; i++) {
+    ItemModel item = ItemModel.map(_items[i]);
+    print('Saved Items ${item.itemName} ,${item.itemQty}, ${item.itemID}, ${item.itemNotes}, ${item.itemTag},${item.itemPicturePath}');
+  }
   // int saved = await db.addItem(
   //   ItemModel(
   //   // itemID: "1",
@@ -33,6 +33,18 @@ void main() async {
   //     itemTotalPrice: 1615.5));
 
   //     print('Add $saved .........................');
+
+  // await db.updateItem(
+  //   ItemModel(
+  //    itemID: 1,
+  //     itemName: "Mobile",
+  //     itemNotes: "The best of best",
+  //     itemPicturePath: "assets/img/3.jpg",
+  //     itemPrice: 55,
+  //     itemQty: 6,
+  //     itemTag: "qweasdfzc",
+  //     itemTotalPrice: 1615.5)
+  // );
 
   // #endregion
 }

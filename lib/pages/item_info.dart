@@ -10,23 +10,21 @@ import 'package:rflutter_alert/rflutter_alert.dart';
 
 class ItemInfo extends StatefulWidget {
   final Widget qrLabel;
-
   final ItemModel itemModel;
+  final String appBarTitle;
 
-  const ItemInfo({Key key, this.qrLabel, this.itemModel,}) : super(key: key);
+  const ItemInfo({this.itemModel, this.appBarTitle, this.qrLabel});
   @override
-  _ItemInfoState createState() => _ItemInfoState();
+  _ItemInfoState createState() =>
+      _ItemInfoState(this.qrLabel, this.itemModel, this.appBarTitle);
 }
 
 class _ItemInfoState extends State<ItemInfo> {
-  
-  // bool qtyButtonState = true;
+  ItemModel itemModel;
+  Widget qrLabel;
+  String appBarTitle;
 
-  // void _buttonChange() {
-  //   setState(() {
-  //     qtyButtonState = !qtyButtonState;
-  //   });
-  // }
+  _ItemInfoState(this.qrLabel, this.itemModel, this.appBarTitle);
 
   DatabaseHelper db = DatabaseHelper();
 
@@ -50,52 +48,28 @@ class _ItemInfoState extends State<ItemInfo> {
   TextEditingController _itemTagController = new TextEditingController();
   TextEditingController _itemNotesController = new TextEditingController();
 
-  Widget imagePlaceHolder(BuildContext context) {
-    return InkWell(
-      onTap: () => _openImagePicker(context),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          Container(
-            margin: EdgeInsets.all(20),
-            padding: EdgeInsets.all(20),
-            decoration: BoxDecoration(
-                border: Border.all(color: Colors.black),
-                borderRadius: BorderRadius.all(Radius.circular(10))),
-            child: Icon(Icons.camera_alt, size: 40, color: Colors.black54),
-          ),
-          Text(
-            'ADD PHOTOS',
-            style: TextStyle(fontSize: 20),
-          )
-        ],
-      ),
-    );
-  }
-
-  Future<int> _saveItem() async {
-   return await db.addItem(
-      ItemModel(
-        itemName: _itemName,
-        itemQty: int.parse(_itemQty),
-        itemPrice: double.parse(_itemPrice),
-        itemTag: _itemTag,
-        itemNotes: _itemNotes,
-      ),
-    );
+  @override
+  void initState() {
+    itemModel.itemPicturePath = 'assets/img/no-image.jpg';
+    _itemNameController.text = itemModel.itemName;
+    _itemQtyController.text = itemModel.itemQty.toString();
+    _itemPriceController.text = itemModel.itemPrice.toString();
+    _itemTagController.text = itemModel.itemTag;
+    _itemNotesController.text = itemModel.itemNotes;
+    super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    _itemNameController.text = widget.itemModel.itemName;
-    _itemQtyController.text = widget.itemModel.itemQty.toString();
-    _itemPriceController.text = widget.itemModel.itemPrice.toString();
-    _itemTagController.text = widget.itemModel.itemTag;
-    _itemNotesController.text = widget.itemModel.itemNotes;
+    // _itemNameController.text = itemModel.itemName;
+    // _itemQtyController.text = itemModel.itemQty.toString();
+    // _itemPriceController.text = itemModel.itemPrice.toString();
+    // _itemTagController.text = itemModel.itemTag;
+    // _itemNotesController.text = itemModel.itemNotes;
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Add Item'),
+        title: Text(appBarTitle),
         centerTitle: true,
       ),
       body: ListView(
@@ -133,9 +107,9 @@ class _ItemInfoState extends State<ItemInfo> {
                             child: Padding(
                               padding: const EdgeInsets.only(left: 15.0),
                               child: ListTile(
-                                title: TextFormField(
+                                title: TextField(
                                   controller: _itemNameController,
-                                  onSaved: (String val) => _itemName = val,
+                                  onChanged: (String val) => updateItemName(),
                                   decoration: InputDecoration(
                                     border: InputBorder.none,
                                     labelText: 'Name',
@@ -157,9 +131,9 @@ class _ItemInfoState extends State<ItemInfo> {
                             child: Padding(
                               padding: const EdgeInsets.only(left: 15.0),
                               child: ListTile(
-                                title: TextFormField(
+                                title: TextField(
                                   controller: _itemQtyController,
-                                  onSaved: (String val) => _itemQty = val,
+                                  onChanged: (String val) => updateItemQty(),
                                   decoration: InputDecoration(
                                     border: InputBorder.none,
                                     labelText: 'Quantity',
@@ -295,9 +269,10 @@ class _ItemInfoState extends State<ItemInfo> {
                                   color: Colors.blueAccent.withOpacity(0.3),
                                   child: Padding(
                                     padding: const EdgeInsets.only(left: 15.0),
-                                    child: TextFormField(
+                                    child: TextField(
                                       controller: _itemPriceController,
-                                      onSaved: (String val) => _itemPrice = val,
+                                      onChanged: (String val) =>
+                                          updateItemPrice(),
                                       decoration: InputDecoration(
                                         border: InputBorder.none,
                                         labelText: 'Price',
@@ -331,9 +306,9 @@ class _ItemInfoState extends State<ItemInfo> {
                             child: Padding(
                               padding: const EdgeInsets.only(left: 15.0),
                               child: ListTile(
-                                title: TextFormField(
+                                title: TextField(
                                   controller: _itemTagController,
-                                  onSaved: (String val) => _itemTag = val,
+                                  onChanged: (String val) => updateItemTag(),
                                   decoration: InputDecoration(
                                     border: InputBorder.none,
                                     labelText: 'Tags',
@@ -362,9 +337,9 @@ class _ItemInfoState extends State<ItemInfo> {
                             child: Padding(
                               padding: const EdgeInsets.only(left: 15.0),
                               child: ListTile(
-                                title: TextFormField(
+                                title: TextField(
                                   controller: _itemNotesController,
-                                  onSaved: (String val) => _itemNotes = val,
+                                  onChanged: (String val) => updateItemNotes(),
                                   decoration: InputDecoration(
                                     border: InputBorder.none,
                                     labelText: 'Notes',
@@ -379,7 +354,7 @@ class _ItemInfoState extends State<ItemInfo> {
                         //------------------QR Label-------------------------
                         Padding(
                           padding: EdgeInsets.all(10),
-                          child: widget.qrLabel,
+                          child: qrLabel,
                         ),
                         //------------------Save Button-------------------------
                         Padding(
@@ -420,10 +395,50 @@ class _ItemInfoState extends State<ItemInfo> {
   void _save() {
     _formKey.currentState.save();
     _saveItem();
-    setState(() {
-      _totalPrice = (int.parse(_itemQty) * int.parse(_itemPrice)).toString();
-    });
-    print(_totalPrice);
+    moveToLastScreen();
+
+    // setState(() {
+    //   _totalPrice = (int.parse(_itemQty) * int.parse(_itemPrice)).toString();
+    // });
+    // print(_totalPrice);
+  }
+
+  Future<int> _saveItem() async {
+    // int result;
+
+    if (itemModel.itemID != null) {
+      return await db.updateItem(itemModel);
+    } else {
+      return await db.addItem(itemModel
+          // ItemModel(
+          //   itemName: _itemName,
+          //   itemQty: int.parse(_itemQty),
+          //   itemPrice: double.parse(_itemPrice),
+          //   itemTag: _itemTag,
+          //   itemNotes: _itemNotes,
+          // ),
+          );
+      // return result;
+    }
+    // if (result != 0) {
+    //   // Success
+    //   _showAlertDialog('Status', 'Note Saved Successfully');
+    // } else {
+    //   // Failure
+    //   _showAlertDialog('Status', 'Problem Saving Note');
+    // }
+  }
+
+  void moveToLastScreen() {
+    Navigator.pop(context, true);
+  }
+
+  void _showAlertDialog(String title, String message) {
+    AlertDialog alertDialog = AlertDialog(
+      title: Text(title),
+      content: Text(message),
+    );
+    showDialog(context: context, builder: (_) => alertDialog);
   }
 
   void _getImage(BuildContext context, ImageSource source) {
@@ -467,5 +482,48 @@ class _ItemInfoState extends State<ItemInfo> {
             ]),
           );
         });
+  }
+
+  Widget imagePlaceHolder(BuildContext context) {
+    return InkWell(
+      onTap: () => _openImagePicker(context),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Container(
+            margin: EdgeInsets.all(20),
+            padding: EdgeInsets.all(20),
+            decoration: BoxDecoration(
+                border: Border.all(color: Colors.black),
+                borderRadius: BorderRadius.all(Radius.circular(10))),
+            child: Icon(Icons.camera_alt, size: 40, color: Colors.black54),
+          ),
+          Text(
+            'ADD PHOTOS',
+            style: TextStyle(fontSize: 20),
+          )
+        ],
+      ),
+    );
+  }
+
+  updateItemName() {
+    itemModel.itemName = _itemNameController.text;
+  }
+
+  updateItemQty() {
+    itemModel.itemQty = int.parse(_itemQtyController.text);
+  }
+
+  updateItemPrice() {
+    itemModel.itemPrice = double.parse(_itemPriceController.text);
+  }
+
+  updateItemTag() {
+    itemModel.itemTag = _itemTagController.text;
+  }
+
+  updateItemNotes() {
+    itemModel.itemNotes = _itemNotesController.text;
   }
 }

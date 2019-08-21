@@ -54,13 +54,6 @@ class DatabaseHelper {
 
   // CRUD - CREATE, READ, UPDATE , DELETE
 
-  //Insertion
-  Future<int> addItem(ItemModel item) async {
-    var dbClient = await db;
-    int res = await dbClient.insert("$tblItem", item.toMap());
-    return res;
-  }
-
   //Get items
   Future<List<Map<String, dynamic>>> getAllItems() async {
     var dbClient = await db;
@@ -78,9 +71,6 @@ class DatabaseHelper {
     }
     return itemList;
   }
-
-
-
 
   Future<List<Map<String, dynamic>>> queryAllRows() async {
     Database dbClient = await db;
@@ -119,10 +109,18 @@ class DatabaseHelper {
         .delete(tblItem, where: "$columnId = ?", whereArgs: [id]);
   }
 
+  //Insertion
+  Future<int> addItem(ItemModel item) async {
+    var dbClient = await db;
+    int res = await dbClient.insert("$tblItem", item.toMap());
+    return res;
+  }
+
   Future<int> updateItem(ItemModel item) async {
     var dbClient = await db;
-    return await dbClient.update(tblItem, item.toMap(),
+    int res = await dbClient.update(tblItem, item.toMap(),
         where: "$columnId = ?", whereArgs: [item.itemID]);
+    return res;
   }
 
   Future close() async {
