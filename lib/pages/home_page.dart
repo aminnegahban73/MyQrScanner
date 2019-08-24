@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 
+import 'package:sqflite/sqlite_api.dart';
+import 'package:bottom_navy_bar/bottom_navy_bar.dart';
+
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:my_barcode_scanner/models/item_model.dart';
 import 'package:my_barcode_scanner/pages/item_info.dart';
 import 'package:my_barcode_scanner/pages/qr_generator.dart';
 import 'package:my_barcode_scanner/resources/database_helper.dart';
-import 'package:sqflite/sqlite_api.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -19,6 +21,10 @@ class _HomePageState extends State<HomePage> {
   List<ItemModel> _itemsList;
   int count = 0;
 
+  int _selectedIndex = 0;
+
+  TextEditingController _searchController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     if (_itemsList == null) {
@@ -27,8 +33,10 @@ class _HomePageState extends State<HomePage> {
     }
 
     return Scaffold(
+      resizeToAvoidBottomPadding: false,
       appBar: AppBar(
-        title: Text("QR Scanner"),
+        automaticallyImplyLeading: false,
+        title: searchCard(),
         centerTitle: true,
       ),
       body: Container(
@@ -87,11 +95,12 @@ class _HomePageState extends State<HomePage> {
                                               icon: Icon(Icons.content_copy),
                                             ),
                                             ModalIconButton(
-                                              onPressed: (){
+                                              onPressed: () {
                                                 Navigator.pop(context);
-                                                dbHelper.deleteItem(this._itemsList[i].itemID);
+                                                dbHelper.deleteItem(
+                                                    this._itemsList[i].itemID);
                                                 setState(() {
-                                                 this._itemsList.removeAt(i); 
+                                                  this._itemsList.removeAt(i);
                                                 });
                                               },
                                               text: 'Delete',
@@ -306,8 +315,73 @@ class _HomePageState extends State<HomePage> {
         icon: Icon(Icons.camera_alt),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      bottomNavigationBar: BottomNavyBar(
+        selectedIndex: _selectedIndex,
+        showElevation: true,
+        onItemSelected: (index) => setState(() {
+          _selectedIndex = index;
+        }),
+        items: [
+          BottomNavyBarItem(
+            icon: Icon(Icons.menu),
+            title: Text('Items'),
+            activeColor: Colors.blueAccent,
+          ),
+          BottomNavyBarItem(
+            icon: Icon(Icons.search),
+            title: Text('Search'),
+            activeColor: Colors.redAccent,
+          ),
+          BottomNavyBarItem(
+            icon: Icon(Icons.label_important),
+            title: Text('Tags'),
+            activeColor: Colors.orangeAccent,
+          ),
+          BottomNavyBarItem(
+              icon: Icon(Icons.more_horiz),
+              title: Text('More'),
+              activeColor: Colors.blueGrey ),
+        ],
+      ),
     );
   }
+
+  Widget searchCard() => Padding(
+        padding: const EdgeInsets.all(1.0),
+        child: Card(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20.0),
+          ),
+          elevation: 2.0,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 1, horizontal: 8),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                IconButton(
+                  color: Colors.black,
+                  icon: Icon(Icons.search),
+                  iconSize: 25,
+                  onPressed: () {},
+                ),
+                SizedBox(
+                  width: 5.0,
+                ),
+                Expanded(
+                  child: TextField(
+                    controller: _searchController,
+                    decoration: InputDecoration(
+                      border: InputBorder.none,
+                      hintText: "Search your Items...",
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
 
   Future _qrScanner() async {
     String res;

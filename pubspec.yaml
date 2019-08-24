@@ -29,6 +29,8 @@ dependencies:
 
   sqflite: any
   path_provider: any
+
+  bottom_navy_bar: ^5.1.0
   # image_picker_modern: ^0.4.12+2
   flutter:
     sdk: flutter
