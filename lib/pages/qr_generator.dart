@@ -4,7 +4,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
-import 'package:my_barcode_scanner/pages/item_info.dart';
+import 'package:my_barcode_scanner/pages/item_details.dart';
 // import 'package:flutter/rendering.dart';
 // import 'package:flutter/services.dart';
 import 'package:qr_flutter/qr_flutter.dart';
@@ -84,7 +84,7 @@ class _QrGeneratorState extends State<QrGenerator> {
                       Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => ItemInfo(
+                          builder: (context) => ItemDetails(
                             qrLabel: qrImg(),
                           ),
                         ),

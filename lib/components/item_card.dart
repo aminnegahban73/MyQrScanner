@@ -1,92 +1,210 @@
 import 'package:flutter/material.dart';
+import 'package:my_barcode_scanner/pages/home_page.dart';
+import 'package:my_barcode_scanner/pages/item_details.dart';
 
 import '../models/item_model.dart';
 import '../resources/database_helper.dart';
+import 'modal_icon_button.dart';
 
-class ItemsCard extends StatefulWidget {
+class ItemCard extends StatefulWidget {
+  const ItemCard({
+    Key key,
+    this.itemList,
+    this.filterList,
+  }) : super(key: key);
+
+  final List<ItemModel> itemList;
+  final List<ItemModel> filterList;
+
   @override
-  _ItemsCardState createState() => _ItemsCardState();
+  _ItemCardState createState() => _ItemCardState();
 }
 
-class _ItemsCardState extends State<ItemsCard> {
-  DatabaseHelper db = DatabaseHelper();
-  var _items;
+class _ItemCardState extends State<ItemCard> {
   int count = 0;
+  List<ItemModel> _itemsList;
 
-  @override
-  void initState() {
-    super.initState();
-    _fetchingData();
-  }
-
-  void _fetchingData() async {
-    List items;
-    items = await db.getAllItems();
-    for (var i = 0; i < items.length; i++) {
-      _items = ItemModel.map(items[i]);
-       print('Saved Items ${_items.itemName} , ${_items.itemID},${_items.itemPicturePath}');
-    }
-
-    setState(() {
-      _items = items;
-    });
-  }
+  DatabaseHelper dbHelper = DatabaseHelper();
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.all(5.0),
-      child: Card(
-        child: Row(
-          children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Image.asset(
-                _items.itemPicturePath,
-                height: 120.0,
-                width: 120.0,
-                fit: BoxFit.cover,
-              ),
-            ),
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Text(
-                      _items.itemName,
-                      style:
-                          TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
-                    ),
-                    SizedBox(height: 20),
-                    Text(
-                      'Qty = ${_items.itemQty}',
-                      style: TextStyle(
-                        color: Colors.grey,
-                        fontSize: 17,
-                        fontWeight: FontWeight.bold,
+    if (_itemsList == null) {
+      _itemsList = List<ItemModel>();
+      updateListView();
+    }
+    return ListView.builder(
+      itemCount: widget.itemList.length,
+      itemBuilder: (BuildContext context, int i) {
+        return Padding(
+          padding: EdgeInsets.all(5.0),
+          child: InkWell(
+            onLongPress: () {
+              showModalBottomSheet(
+                  backgroundColor: Colors.white60,
+                  context: context,
+                  builder: (BuildContext context) {
+                    return Container(
+                      height: 250.0,
+                      width: 40,
+                      padding: EdgeInsets.all(10.0),
+                      child: ListView(
+                        children: <Widget>[
+                          Column(children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: <Widget>[
+                                ModalIconButton(
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                    navigateToInfoPage(
+                                        this.widget.itemList[i], 'Edit');
+                                  },
+                                  text: 'Edit',
+                                  icon: Icon(Icons.edit),
+                                ),
+                                ModalIconButton(
+                                  text: 'Quantity',
+                                  icon: Icon(Icons.iso),
+                                ),
+                              ],
+                            ),
+                            SizedBox(
+                              height: 20,
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: <Widget>[
+                                ModalIconButton(
+                                  text: 'Copy',
+                                  icon: Icon(Icons.content_copy),
+                                ),
+                                ModalIconButton(
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                    dbHelper.deleteItem(
+                                        this.widget.itemList[i].itemID);
+                                    setState(() {
+                                      this.widget.itemList.removeAt(i);
+                                    });
+                                  },
+                                  text: 'Delete',
+                                  icon: Icon(Icons.delete_outline),
+                                ),
+                              ],
+                            ),
+                          ]),
+                        ],
+                      ),
+                    );
+                  });
+            },
+            onTap: () => navigateToInfoPage(this.widget.itemList[i], 'Edit'),
+            // Navigator.push(
+            //   context,
+            //   MaterialPageRoute(
+            //     builder: (context) =>
+            //         ItemInfo(itemModel: itemList[i]),
+            //   ),
+            // ),
+            child: Card(
+              child: Row(
+                children: <Widget>[
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: widget.itemList[i].itemPicturePath == null
+                        ? Image.asset(
+                            'assets/img/no-image.jpg',
+                            height: 120.0,
+                            width: 120.0,
+                            fit: BoxFit.cover,
+                          )
+                        : Image.asset(
+                            widget.itemList[i].itemPicturePath,
+                            height: 120.0,
+                            width: 120.0,
+                            fit: BoxFit.cover,
+                          ),
+                  ),
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Text(
+                            widget.itemList[i].itemName,
+                            style: TextStyle(
+                                fontSize: 25, fontWeight: FontWeight.bold),
+                          ),
+                          SizedBox(height: 20),
+                          Text(
+                            'Price = ${widget.itemList[i].itemPrice}',
+                            style: TextStyle(
+                              color: Colors.grey,
+                              fontSize: 17,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          SizedBox(height: 5),
+                          Text(
+                            'Qty = ${widget.itemList[i].itemQty}',
+                            style: TextStyle(
+                              color: Colors.grey,
+                              fontSize: 17,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                  ],
-                ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Container(
+                      alignment: Alignment.topRight,
+                      height: 130,
+                      child: IconButton(
+                        onPressed: () {
+                          print('xcxx cx');
+                        },
+                        icon: Icon(Icons.more_vert),
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Container(
-                alignment: Alignment.topRight,
-                height: 130,
-                child: IconButton(
-                  onPressed: () {},
-                  icon: Icon(Icons.more_vert),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
+  }
+
+  void navigateToInfoPage(ItemModel itemModel, String title) async {
+    bool result =
+        await Navigator.push(context, MaterialPageRoute(builder: (context) {
+      return ItemDetails(
+        itemModel: itemModel,
+        appBarTitle: title,
+      );
+    }));
+
+    if (result == true) {
+      updateListView();
+    }
+  }
+
+  void updateListView() async {
+    var dbHelperFuture = dbHelper.initDb();
+    dbHelperFuture.then((database) {
+      Future<List<ItemModel>> itemListFuture = dbHelper.getItemList();
+      itemListFuture.then((itemList) {
+        setState(() {
+          this._itemsList = itemList;
+          this.count = itemList.length;
+        });
+      });
+    });
   }
 }

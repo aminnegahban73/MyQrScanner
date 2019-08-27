@@ -2,29 +2,28 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:my_barcode_scanner/components/connected_btton.dart';
 import 'package:my_barcode_scanner/models/item_model.dart';
 import 'package:my_barcode_scanner/resources/database_helper.dart';
 
 import 'package:rflutter_alert/rflutter_alert.dart';
 
-class ItemInfo extends StatefulWidget {
+class ItemDetails extends StatefulWidget {
   final Widget qrLabel;
   final ItemModel itemModel;
   final String appBarTitle;
 
-  const ItemInfo({this.itemModel, this.appBarTitle, this.qrLabel});
+  const ItemDetails({this.itemModel, this.appBarTitle, this.qrLabel});
   @override
-  _ItemInfoState createState() =>
-      _ItemInfoState(this.qrLabel, this.itemModel, this.appBarTitle);
+  _ItemDetailsState createState() =>
+      _ItemDetailsState(this.qrLabel, this.itemModel, this.appBarTitle);
 }
 
-class _ItemInfoState extends State<ItemInfo> {
+class _ItemDetailsState extends State<ItemDetails> {
   ItemModel itemModel;
   Widget qrLabel;
   String appBarTitle;
 
-  _ItemInfoState(this.qrLabel, this.itemModel, this.appBarTitle);
+  _ItemDetailsState(this.qrLabel, this.itemModel, this.appBarTitle);
 
   DatabaseHelper db = DatabaseHelper();
 
@@ -53,8 +52,10 @@ class _ItemInfoState extends State<ItemInfo> {
     if (itemModel.itemID == null)
       itemModel.itemPicturePath = 'assets/img/no-image.jpg';
     _itemNameController.text = itemModel.itemName;
-    _itemQtyController.text = itemModel.itemQty.toString();
-    _itemPriceController.text = itemModel.itemPrice.toString();
+    _itemQtyController.text =
+        itemModel.itemQty == null ? '' : itemModel.itemQty.toString();
+    _itemPriceController.text =
+        itemModel.itemPrice == null ? '' : itemModel.itemPrice.toString();
     _itemTagController.text = itemModel.itemTag;
     _itemNotesController.text = itemModel.itemNotes;
     super.initState();
@@ -116,7 +117,7 @@ class _ItemInfoState extends State<ItemInfo> {
                                     labelText: 'Name',
                                     labelStyle: TextStyle(fontSize: 20),
                                   ),
-                                  keyboardType: TextInputType.emailAddress,
+                                  // keyboardType: TextInputType.emailAddress,
                                 ),
                               ),
                             ),
@@ -140,7 +141,7 @@ class _ItemInfoState extends State<ItemInfo> {
                                     labelText: 'Quantity',
                                     labelStyle: TextStyle(fontSize: 20),
                                   ),
-                                  keyboardType: TextInputType.emailAddress,
+                                  keyboardType: TextInputType.number,
                                 ),
                                 trailing: IconButton(
                                   onPressed: () {
@@ -163,8 +164,7 @@ class _ItemInfoState extends State<ItemInfo> {
                                                           .center,
                                                   children: <Widget>[
                                                     Container(
-                                                      child: ConnectedButton(
-                                                          id: 0),
+                                                      child: Container(),
                                                     ),
                                                     Row(
                                                       mainAxisAlignment:
@@ -189,8 +189,7 @@ class _ItemInfoState extends State<ItemInfo> {
                                                           .center,
                                                   children: <Widget>[
                                                     Container(
-                                                      child: ConnectedButton(
-                                                          id: 1),
+                                                      child: Container(),
                                                     ),
                                                     Row(
                                                       mainAxisAlignment:
@@ -280,7 +279,7 @@ class _ItemInfoState extends State<ItemInfo> {
                                         labelStyle: TextStyle(fontSize: 20),
                                         icon: Icon(Icons.money_off),
                                       ),
-                                      keyboardType: TextInputType.emailAddress,
+                                      keyboardType: TextInputType.number,
                                     ),
                                   ),
                                 ),
@@ -315,7 +314,7 @@ class _ItemInfoState extends State<ItemInfo> {
                                     labelText: 'Tags',
                                     labelStyle: TextStyle(fontSize: 20),
                                   ),
-                                  keyboardType: TextInputType.emailAddress,
+                                  // keyboardType: TextInputType.emailAddress,
                                 ),
                                 trailing: IconButton(
                                   onPressed: () {},
@@ -346,7 +345,7 @@ class _ItemInfoState extends State<ItemInfo> {
                                     labelText: 'Notes',
                                     labelStyle: TextStyle(fontSize: 20),
                                   ),
-                                  keyboardType: TextInputType.emailAddress,
+                                  // keyboardType: TextInputType.emailAddress,
                                 ),
                               ),
                             ),

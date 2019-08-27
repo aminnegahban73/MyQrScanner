@@ -72,10 +72,10 @@ class DatabaseHelper {
     return itemList;
   }
 
-  Future<List<Map<String, dynamic>>> queryAllRows() async {
-    Database dbClient = await db;
-    return await dbClient.query(tblItem);
-  }
+  // Future<List<Map<String, dynamic>>> queryAllRows() async {
+  //   Database dbClient = await db;
+  //   return await dbClient.query(tblItem);
+  // }
 
   Future fetchEveryone() async {
     Database dbClient = await db;
