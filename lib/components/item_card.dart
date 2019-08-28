@@ -10,11 +10,9 @@ class ItemCard extends StatefulWidget {
   const ItemCard({
     Key key,
     this.itemList,
-    this.filterList,
   }) : super(key: key);
 
   final List<ItemModel> itemList;
-  final List<ItemModel> filterList;
 
   @override
   _ItemCardState createState() => _ItemCardState();
@@ -22,16 +20,11 @@ class ItemCard extends StatefulWidget {
 
 class _ItemCardState extends State<ItemCard> {
   int count = 0;
-  List<ItemModel> _itemsList;
 
   DatabaseHelper dbHelper = DatabaseHelper();
 
   @override
   Widget build(BuildContext context) {
-    if (_itemsList == null) {
-      _itemsList = List<ItemModel>();
-      updateListView();
-    }
     return ListView.builder(
       itemCount: widget.itemList.length,
       itemBuilder: (BuildContext context, int i) {
@@ -182,29 +175,11 @@ class _ItemCardState extends State<ItemCard> {
   }
 
   void navigateToInfoPage(ItemModel itemModel, String title) async {
-    bool result =
-        await Navigator.push(context, MaterialPageRoute(builder: (context) {
+    await Navigator.push(context, MaterialPageRoute(builder: (context) {
       return ItemDetails(
         itemModel: itemModel,
         appBarTitle: title,
       );
     }));
-
-    if (result == true) {
-      updateListView();
-    }
-  }
-
-  void updateListView() async {
-    var dbHelperFuture = dbHelper.initDb();
-    dbHelperFuture.then((database) {
-      Future<List<ItemModel>> itemListFuture = dbHelper.getItemList();
-      itemListFuture.then((itemList) {
-        setState(() {
-          this._itemsList = itemList;
-          this.count = itemList.length;
-        });
-      });
-    });
   }
 }

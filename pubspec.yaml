@@ -71,6 +71,8 @@ flutter:
    - assets/img/4.jpg
    - assets/img/5.jpg
    - assets/img/6.jpg
+   - assets/img/qr.png
+   - assets/img/qr_barcode.png
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
 
