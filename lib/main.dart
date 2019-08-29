@@ -1,11 +1,14 @@
 import 'package:bottom_navy_bar/bottom_navy_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:my_barcode_scanner/models/item_model.dart';
+import 'package:my_barcode_scanner/models/placeholder.dart';
 import 'package:my_barcode_scanner/pages/item_details.dart';
 import 'package:my_barcode_scanner/pages/more_page.dart';
 import 'package:my_barcode_scanner/pages/search_page.dart';
+import 'package:my_barcode_scanner/pages/settings_page.dart';
 import 'package:my_barcode_scanner/pages/tag_page.dart';
 import 'package:my_barcode_scanner/resources/database_helper.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'pages/home_page.dart';
 
@@ -57,7 +60,12 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   int _selectedIndex = 0;
 
-  final pages = [HomePage(), SearchPage(), TagPage(), MorePage()];
+  final pages = [
+    HomePage(),
+    SearchPage(),
+    TagPage(),
+    SettingsPage(),
+  ];
 
   @override
   Widget build(BuildContext context) {

@@ -3,6 +3,8 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:my_barcode_scanner/components/item_card.dart';
 import 'package:my_barcode_scanner/components/modal_icon_button.dart';
+import 'package:my_barcode_scanner/models/placeholder.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:sqflite/sqlite_api.dart';
 import 'package:bottom_navy_bar/bottom_navy_bar.dart';
@@ -23,6 +25,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   String scanResult = '';
   String _query;
+  String fontfamily;
 
   DatabaseHelper dbHelper = DatabaseHelper();
 
@@ -30,12 +33,88 @@ class _HomePageState extends State<HomePage> {
 
   List<ItemModel> _itemsList;
   List<ItemModel> _filterList;
+  List<String> theme;
 
   bool _firstSearch = true;
 
   TextEditingController _searchController = TextEditingController();
 
- 
+  @override
+  void initState() {
+    super.initState();
+    theme = PlaceHolder.theme ?? PlaceHolder.theme1;
+    // fontfamily = PlaceHolder.fontfamily ?? PlaceHolder.fontFamilyRoboto;
+    onchange().then((_) {
+      setState(() {
+        theme = PlaceHolder.theme ?? PlaceHolder.theme1;
+        // fontfamily = PlaceHolder.fontfamily ?? PlaceHolder.fontFamilyRoboto;
+      });
+    });
+  }
+
+  onchange() async {
+    final SharedPreferences pref = await SharedPreferences.getInstance();
+    String fontsize = pref.getString("fontsize");
+    String theme = pref.getString("theme");
+   // String fontfamily = pref.getString("fontfamily");
+
+    if (fontsize == null) {
+      pref.setString("fontsize", "f2");
+      PlaceHolder.fontsize = PlaceHolder.fontsize2;
+      PlaceHolder.fs = 1;
+    }
+    if (theme == null) {
+      pref.setString("theme", "t2");
+      PlaceHolder.theme = PlaceHolder.theme2;
+      PlaceHolder.ts = 1;
+    }
+    // if (fontfamily == null) {
+    //   pref.setString("fontfamily", "ff2");
+    //   PlaceHolder.fontfamily = PlaceHolder.fontFamilyPacifico;
+    //   PlaceHolder.ffs = 1;
+    // }
+    if (fontsize != null && theme != null ) {
+      setState(() {
+        String ttype = pref.getString("theme");
+        String ftype = pref.getString("fontsize");
+        // String fftype = pref.getString("fontfamily");
+
+        if (ttype == "t1") {
+          PlaceHolder.theme = PlaceHolder.theme1;
+          PlaceHolder.ts = 0;
+        } else if (ttype == "t2") {
+          PlaceHolder.theme = PlaceHolder.theme2;
+          PlaceHolder.ts = 1;
+        } else if (ttype == "t3") {
+          PlaceHolder.theme = PlaceHolder.theme3;
+          PlaceHolder.ts = 2;
+        } else if (ttype == "t4") {
+          PlaceHolder.theme = PlaceHolder.theme4;
+          PlaceHolder.ts = 3;
+        }
+
+        if (ftype == "f1") {
+          PlaceHolder.fontsize = PlaceHolder.fontsize1;
+          PlaceHolder.fs = 0;
+        } else if (ftype == "f2") {
+          PlaceHolder.fontsize = PlaceHolder.fontsize2;
+          PlaceHolder.fs = 1;
+        } else if (ftype == "f3") {
+          PlaceHolder.fontsize = PlaceHolder.fontsize3;
+          PlaceHolder.fs = 2;
+        }
+
+        // if (fftype == "ff1") {
+        //   PlaceHolder.fontfamily = PlaceHolder.fontFamilyRoboto;
+        //   PlaceHolder.ffs = 0;
+        // } else if (fftype == "ff2") {
+        //   PlaceHolder.fontfamily = PlaceHolder.fontFamilyPacifico;
+        //   PlaceHolder.ffs = 1;
+        // }
+      });
+    }
+  }
+
   _HomePageState() {
     _searchController.addListener(() {
       if (_searchController.text.isEmpty) {
@@ -60,13 +139,19 @@ class _HomePageState extends State<HomePage> {
     }
 
     return Scaffold(
+      backgroundColor:  Color(PlaceHolder.hexToInt(theme[2])),
       resizeToAvoidBottomPadding: false,
       appBar: AppBar(
+        backgroundColor:  Color(PlaceHolder.hexToInt(theme[0])),
         automaticallyImplyLeading: false,
         title: searchCard(),
         centerTitle: true,
       ),
-      body:_firstSearch? ItemCard(itemList: _itemsList ,):_performSearch(),
+      body: _firstSearch
+          ? ItemCard(
+              itemList: _itemsList,
+            )
+          : _performSearch(),
 
       // #region ListView with Futurebuilder
 
@@ -166,6 +251,7 @@ class _HomePageState extends State<HomePage> {
       // #endregion
 
       floatingActionButton: FloatingActionButton.extended(
+        backgroundColor: Color(PlaceHolder.hexToInt(theme[0])),
         label: Text('Scan'),
         //  onPressed: _qrScanner,
         onPressed: () => navigateToInfoPage(
@@ -188,12 +274,14 @@ class _HomePageState extends State<HomePage> {
     _filterList = List<ItemModel>();
     for (var i = 0; i < _itemsList.length; i++) {
       var item = _itemsList[i];
-      if (item.itemName.toLowerCase().contains(_query.toLowerCase())||
-      item.itemNotes.toLowerCase().contains(_query.toLowerCase())) {
+      if (item.itemName.toLowerCase().contains(_query.toLowerCase()) ||
+          item.itemNotes.toLowerCase().contains(_query.toLowerCase())) {
         _filterList.add(item);
       }
     }
-    return ItemCard(itemList: _filterList ,);
+    return ItemCard(
+      itemList: _filterList,
+    );
   }
 
   Widget searchCard() => Padding(
@@ -275,4 +363,3 @@ class _HomePageState extends State<HomePage> {
     });
   }
 }
-

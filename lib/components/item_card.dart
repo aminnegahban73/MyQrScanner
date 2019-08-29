@@ -29,7 +29,7 @@ class _ItemCardState extends State<ItemCard> {
       itemCount: widget.itemList.length,
       itemBuilder: (BuildContext context, int i) {
         return Padding(
-          padding: EdgeInsets.all(5.0),
+          padding: EdgeInsets.all(1.0),
           child: InkWell(
             onLongPress: () {
               showModalBottomSheet(

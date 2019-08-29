@@ -31,6 +31,8 @@ dependencies:
   path_provider: any
 
   bottom_navy_bar: ^5.1.0
+
+  shared_preferences: ^0.5.3+4
   # image_picker_modern: ^0.4.12+2
   flutter:
     sdk: flutter
