@@ -254,16 +254,17 @@ class _HomePageState extends State<HomePage> {
         backgroundColor: Color(PlaceHolder.hexToInt(theme[0])),
         label: Text('Scan'),
         //  onPressed: _qrScanner,
-        onPressed: () => navigateToInfoPage(
-            ItemModel(
-                itemName: '',
-                itemNotes: '',
-                itemPicturePath: '',
-                itemPrice: null,
-                itemQty: null,
-                itemTag: '',
-                itemTotalPrice: 0),
-            'ADD'),
+        onPressed: () => _qrScanner(),
+        // navigateToInfoPage(
+        //     ItemModel(
+        //         itemName: '',
+        //         itemNotes: '',
+        //         itemPicturePath: '',
+        //         itemPrice: null,
+        //         itemQty: null,
+        //         itemTag: '',
+        //         itemTotalPrice: 0),
+        //     'ADD'),
         icon: Icon(Icons.camera_alt),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,

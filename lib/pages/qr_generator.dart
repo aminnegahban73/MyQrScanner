@@ -4,6 +4,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
+import 'package:my_barcode_scanner/models/item_model.dart';
 import 'package:my_barcode_scanner/pages/item_details.dart';
 // import 'package:flutter/rendering.dart';
 // import 'package:flutter/services.dart';
@@ -19,7 +20,6 @@ class QrGenerator extends StatefulWidget {
 }
 
 class _QrGeneratorState extends State<QrGenerator> {
-  
   String scanResult = '';
 
 //   static const double _topSectionTopPadding = 50.0;
@@ -85,6 +85,15 @@ class _QrGeneratorState extends State<QrGenerator> {
                         context,
                         MaterialPageRoute(
                           builder: (context) => ItemDetails(
+                            itemModel: ItemModel(
+                                itemName: '',
+                                itemNotes: '',
+                                itemPicturePath: '',
+                                itemPrice: null,
+                                itemQty: null,
+                                itemTag: '',
+                                itemTotalPrice: 0),
+                                appBarTitle: 'ADD',
                             qrLabel: qrImg(),
                           ),
                         ),

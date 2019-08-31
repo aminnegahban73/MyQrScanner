@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:my_barcode_scanner/models/item_model.dart';
 import 'package:my_barcode_scanner/models/placeholder.dart';
+import 'package:my_barcode_scanner/pages/home_page.dart';
 import 'package:my_barcode_scanner/resources/database_helper.dart';
 
 import 'package:rflutter_alert/rflutter_alert.dart';
@@ -63,7 +64,7 @@ class _ItemDetailsState extends State<ItemDetails> {
     _itemTagController.text = itemModel.itemTag;
     _itemNotesController.text = itemModel.itemNotes;
     super.initState();
-      theme = PlaceHolder.theme ?? PlaceHolder.theme1;
+    theme = PlaceHolder.theme ?? PlaceHolder.theme1;
     // fontfamily = PlaceHolder.fontfamily ?? PlaceHolder.fontFamilyRoboto;
     onchange().then((_) {
       setState(() {
@@ -71,15 +72,20 @@ class _ItemDetailsState extends State<ItemDetails> {
         // fontfamily = PlaceHolder.fontfamily ?? PlaceHolder.fontFamilyRoboto;
       });
     });
+    if (itemModel.itemID != null &&
+        _itemQtyController.text.isNotEmpty &&
+        _itemPriceController.text.isNotEmpty) {
+      double totalPrice = double.parse(_itemPriceController.text) *
+          int.parse(_itemQtyController.text);
+      _totalPrice = totalPrice.toString();
+    }
   }
 
-  
- 
   onchange() async {
     final SharedPreferences pref = await SharedPreferences.getInstance();
     String fontsize = pref.getString("fontsize");
     String theme = pref.getString("theme");
-   // String fontfamily = pref.getString("fontfamily");
+    // String fontfamily = pref.getString("fontfamily");
 
     if (fontsize == null) {
       pref.setString("fontsize", "f2");
@@ -96,7 +102,7 @@ class _ItemDetailsState extends State<ItemDetails> {
     //   PlaceHolder.fontfamily = PlaceHolder.fontFamilyPacifico;
     //   PlaceHolder.ffs = 1;
     // }
-    if (fontsize != null && theme != null ) {
+    if (fontsize != null && theme != null) {
       setState(() {
         String ttype = pref.getString("theme");
         String ftype = pref.getString("fontsize");
@@ -367,7 +373,7 @@ class _ItemDetailsState extends State<ItemDetails> {
                               padding: const EdgeInsets.only(
                                   right: 25, left: 25, top: 20),
                               child: Text(
-                                _totalPrice,
+                               ' $_totalPrice  Toman',
                                 style: TextStyle(
                                     fontSize: 20, color: Colors.black54),
                               ),
@@ -473,7 +479,7 @@ class _ItemDetailsState extends State<ItemDetails> {
   void _save() {
     _formKey.currentState.save();
     _saveItem();
-    moveToLastScreen();
+    moveToHomeScreen();
 
     // setState(() {
     //   _totalPrice = (int.parse(_itemQty) * int.parse(_itemPrice)).toString();
@@ -507,8 +513,9 @@ class _ItemDetailsState extends State<ItemDetails> {
     // }
   }
 
-  void moveToLastScreen() {
-    Navigator.pop(context, true);
+  void moveToHomeScreen() {
+    Navigator.pushReplacement(
+        context, MaterialPageRoute(builder: (context) => HomePage()));
   }
 
   void _showAlertDialog(String title, String message) {
