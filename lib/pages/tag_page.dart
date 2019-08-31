@@ -96,7 +96,7 @@ class _TagPageState extends State<TagPage> {
         title: Text('Tag Page'),
       
       ),
-      body: Container(),
+      body: Center(child: Container(child: Text('Soon...'),)),
     );
   }
 }

@@ -25,7 +25,6 @@ class _SearchPageState extends State<SearchPage> {
 
   bool _firstSearch = true;
 
-  
   @override
   void initState() {
     super.initState();
@@ -43,7 +42,7 @@ class _SearchPageState extends State<SearchPage> {
     final SharedPreferences pref = await SharedPreferences.getInstance();
     String fontsize = pref.getString("fontsize");
     String theme = pref.getString("theme");
-   // String fontfamily = pref.getString("fontfamily");
+    // String fontfamily = pref.getString("fontfamily");
 
     if (fontsize == null) {
       pref.setString("fontsize", "f2");
@@ -60,7 +59,7 @@ class _SearchPageState extends State<SearchPage> {
     //   PlaceHolder.fontfamily = PlaceHolder.fontFamilyPacifico;
     //   PlaceHolder.ffs = 1;
     // }
-    if (fontsize != null && theme != null ) {
+    if (fontsize != null && theme != null) {
       setState(() {
         String ttype = pref.getString("theme");
         String ftype = pref.getString("fontsize");
@@ -101,7 +100,6 @@ class _SearchPageState extends State<SearchPage> {
       });
     }
   }
-
 
   _SearchPageState() {
     //   _searchController.addListener(() {
@@ -162,7 +160,8 @@ class _SearchPageState extends State<SearchPage> {
                           child: MaterialButton(
                             height: 50,
                             onPressed: () {
-                              _qrScanner();
+                              _showDialog();
+                             // _qrScanner();
                             },
                             minWidth: MediaQuery.of(context).size.width / 2,
                             child: Text(
@@ -261,7 +260,8 @@ class _SearchPageState extends State<SearchPage> {
                   ),
                   iconSize: 35,
                   onPressed: () {
-                    _qrScanner();
+                  _showDialog();
+                  //  _qrScanner();
                   },
                 ),
               ],
@@ -269,4 +269,27 @@ class _SearchPageState extends State<SearchPage> {
           ),
         ),
       );
+
+  void _showDialog() {
+    // flutter defined function
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        // return object of type Dialog
+        return AlertDialog(
+          title: new Text("Coming Soon ..."),
+          content: new Text("This feature is under development."),
+          actions: <Widget>[
+            // usually buttons at the bottom of the dialog
+            new FlatButton(
+              child: new Text("Close"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
 }
